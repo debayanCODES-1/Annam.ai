@@ -1,6 +1,5 @@
 export const dynamic = 'force-dynamic';
 
-import dynamicImport from 'next/dynamic';
 import Link from 'next/link';
 import { prisma } from '../../../lib/db/prisma';
 import { t } from '../../../lib/i18n';
@@ -10,8 +9,8 @@ import CropComparisonCard from '../../../components/farmer/CropComparisonCard';
 import BookMachineryCard from '../../../components/farmer/BookMachineryCard';
 import FarmMap from '../../../components/farmer/FarmMap';
 import StoredFarmerProfile from '../../../components/farmer/StoredFarmerProfile';
+import HarvestTrendChart from '../../../components/farmer/HarvestTrendChart';
 
-const HarvestTrendChart = dynamicImport(() => import('../../../components/farmer/HarvestTrendChart').then((mod) => mod.default), { ssr: false });
 const weatherProvider = new MockWeatherProvider();
 
 function formatDate(date: Date | string | null) {
