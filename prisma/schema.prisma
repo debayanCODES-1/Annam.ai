@@ -1,0 +1,157 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String   @id @default(cuid())
+  name              String
+  phone             String
+  role              String
+  preferredLanguage String   @default("en")
+  village           String
+  district          String
+  state             String
+  createdAt         DateTime @default(now())
+  farms             Farm[]   @relation("FarmerFarms")
+  machinery         Machinery[] @relation("ProviderMachinery")
+  bookings          MachineryBooking[]
+  residueListings   ResidueListing[]
+}
+
+model Farm {
+  id                  String           @id @default(cuid())
+  farmerId            String
+  farmName            String
+  areaInAcres         Float
+  latitude            Float
+  longitude           Float
+  soilType            String
+  irrigationType      String
+  currentCrop         String
+  cropStage           String
+  createdAt           DateTime         @default(now())
+  farmer              User             @relation(fields: [farmerId], references: [id], name: "FarmerFarms")
+  harvestRecords      HarvestRecord[]
+  bookings            MachineryBooking[]
+  residueListings     ResidueListing[]
+  recommendations     Recommendation[]
+}
+
+model HarvestRecord {
+  id                   String   @id @default(cuid())
+  farmId               String
+  crop                 String
+  harvestDate          DateTime
+  estimatedYieldTonnes Float
+  estimatedResidueTonnes Float
+  residueStatus        String
+  createdAt            DateTime @default(now())
+  farm                 Farm     @relation(fields: [farmId], references: [id])
+}
+
+model Machinery {
+  id                 String   @id @default(cuid())
+  providerId         String
+  name               String
+  type               String
+  pricePerAcre       Float
+  latitude           Float
+  longitude          Float
+  village            String
+  district           String
+  availabilityStatus String
+  availableFrom      DateTime
+  availableUntil     DateTime
+  provider           User     @relation(fields: [providerId], references: [id], name: "ProviderMachinery")
+  bookings           MachineryBooking[]
+}
+
+model MachineryBooking {
+  id             String   @id @default(cuid())
+  farmerId       String
+  machineryId    String
+  farmId         String
+  requestedDate  DateTime
+  acres          Float
+  estimatedCost  Float
+  status         String
+  createdAt      DateTime @default(now())
+  farmer         User     @relation(fields: [farmerId], references: [id])
+  machinery      Machinery @relation(fields: [machineryId], references: [id])
+  farm           Farm     @relation(fields: [farmId], references: [id])
+}
+
+model BiomassBuyer {
+  id                   String   @id @default(cuid())
+  name                 String
+  buyerType            String
+  acceptedResidueTypes String
+  pricePerTonne        Float
+  capacityTonnes       Float
+  latitude             Float
+  longitude            Float
+  village              String
+  district             String
+  contactPhone         String
+  status               String
+}
+
+model ResidueListing {
+  id            String   @id @default(cuid())
+  farmerId      String
+  farmId        String
+  residueType   String
+  quantityTonnes Float
+  pickupDate    DateTime
+  askingPrice   Float
+  status        String
+  farmer        User     @relation(fields: [farmerId], references: [id])
+  farm          Farm     @relation(fields: [farmId], references: [id])
+}
+
+model CropOption {
+  id                  String   @id @default(cuid())
+  name                String
+  localName           String
+  waterRequirementMm  Float
+  cropDurationDays    Int
+  estimatedIncomePerAcre Float
+  riskLevel           String
+  suitableSoilTypes   String
+  suitableStates      String
+  season              String
+}
+
+model Recommendation {
+  id                    String   @id @default(cuid())
+  farmId                String
+  recommendationType    String
+  title                 String
+  explanation           String
+  priority              Int
+  confidence            Float
+  estimatedWaterSaving  Float
+  estimatedIncomeChange Float
+  actionLabel           String
+  status                String
+  createdAt             DateTime @default(now())
+  farm                  Farm     @relation(fields: [farmId], references: [id])
+}
+
+model DistrictMetric {
+  id                    String   @id @default(cuid())
+  district              String
+  state                 String
+  residueTonnes         Float
+  estimatedBurningRisk  Float
+  machineryAvailable    Int
+  machineryRequired     Int
+  biomassDemandTonnes   Float
+  estimatedAvoidedBurning Float
+  updatedAt             DateTime @default(now())
+}
