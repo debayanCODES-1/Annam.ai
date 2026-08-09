@@ -6,3 +6,4 @@ out
 .DS_Store
 coverage
 /playwright-report
+/prisma/dev.db
