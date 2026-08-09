@@ -8,9 +8,7 @@ const nextConfig = nextPWA({
   register: true,
   skipWaiting: true,
   reactStrictMode: true,
-  eslint: {
-    dirs: ['app', 'components', 'lib', 'prisma', 'tests'],
-  },
+  turbopack: {},
   images: {
     remotePatterns: [],
   },
