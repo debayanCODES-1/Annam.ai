@@ -1,12 +1,4 @@
-import nextPWA from 'next-pwa';
-
-const isProd = process.env.NODE_ENV === 'production';
-
-const nextConfig = nextPWA({
-  dest: 'public',
-  disable: !isProd,
-  register: true,
-  skipWaiting: true,
+const nextConfig = {
   reactStrictMode: true,
   turbopack: {},
   images: {
@@ -15,6 +7,6 @@ const nextConfig = nextPWA({
   typescript: {
     ignoreBuildErrors: false,
   },
-});
+};
 
 export default nextConfig;

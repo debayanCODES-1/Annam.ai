@@ -51,7 +51,7 @@ export default function StoredFarmerProfile() {
 
   return (
     <Card className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-4">
         <div>
           <p className="text-sm uppercase tracking-[0.24em] text-slate-500">Saved farmer profile</p>
           <h2 className="mt-2 text-xl font-semibold text-slate-900">{profile.name}</h2>
@@ -73,8 +73,29 @@ export default function StoredFarmerProfile() {
             <p className="text-sm text-slate-500">Area</p>
             <p className="text-sm font-medium text-slate-900">{profile.areaInAcres} acres</p>
           </div>
+          <div>
+            <p className="text-sm text-slate-500">Harvest date</p>
+            <p className="text-sm font-medium text-slate-900">{profile.harvestDate}</p>
+          </div>
+          <div>
+            <p className="text-sm text-slate-500">Estimated yield</p>
+            <p className="text-sm font-medium text-slate-900">{profile.estimatedYield} t</p>
+          </div>
+          <div>
+            <p className="text-sm text-slate-500">Machinery</p>
+            <p className="text-sm font-medium text-slate-900">{profile.hasMachinery ? 'Yes' : 'No'}</p>
+          </div>
+          <div>
+            <p className="text-sm text-slate-500">Soil / irrigation</p>
+            <p className="text-sm font-medium text-slate-900">{profile.soilType}, {profile.irrigationType}</p>
+          </div>
         </div>
-        <button type="button" className="mt-4 inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-50" onClick={clearProfile}>
+
+        <div className="rounded-3xl bg-slate-50 p-4 text-sm text-slate-700">
+          Keep this profile updated to improve residue pricing, crop comparison, and machinery booking recommendations.
+        </div>
+
+        <button type="button" className="mt-2 inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-50" onClick={clearProfile}>
           Clear saved profile
         </button>
       </div>
