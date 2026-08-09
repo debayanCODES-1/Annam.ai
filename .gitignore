@@ -7,3 +7,5 @@ out
 coverage
 /playwright-report
 /prisma/dev.db
+tsconfig.tsbuildinfo
+node_modules

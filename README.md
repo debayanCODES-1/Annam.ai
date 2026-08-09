@@ -121,3 +121,31 @@ Recommendation results are generated using prototype scoring logic based on resi
 ## Limitations and prototype disclaimer
 
 This application uses realistic demo data and prototype estimates. Verify prices, machinery availability and agronomic advice locally before acting.
+
+## Deployment
+
+Recommended: deploy with Vercel (GitHub integration).
+
+1. Connect this repository to Vercel via the Vercel dashboard (https://vercel.com).
+2. In the Vercel project settings add the following Environment Variables in the same scope as your deployment (Preview/Production):
+    - `DATABASE_URL` — use a hosted database (Postgres) for production; SQLite is only for demos.
+    - `NEXT_PUBLIC_APP_NAME`
+    - `NEXT_PUBLIC_DEFAULT_LANGUAGE`
+    - `NEXT_PUBLIC_PILOT_REGION`
+3. Optionally add secrets required by GitHub Actions:
+    - `VERCEL_TOKEN` — Personal token from Vercel.
+    - `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` — available from Vercel project settings.
+
+Manual CLI deploy:
+
+```bash
+npm i -g vercel
+vercel login
+vercel --prod
+```
+
+CI deploy (GitHub Action): the repository includes `.github/workflows/deploy-vercel.yml` which deploys `main` to Vercel when the required secrets are configured.
+
+Notes:
+- For production, use a hosted Postgres or MySQL database and set `DATABASE_URL` accordingly. Vercel's ephemeral filesystem cannot persist SQLite files between deployments.
+- After adding secrets, trigger a deployment by pushing to `main` or via the Vercel dashboard.

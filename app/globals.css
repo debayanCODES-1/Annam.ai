@@ -5,7 +5,7 @@
 :root {
   color-scheme: light;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background-color: #f7faf6;
+  background-color: #f3f7fb;
 }
 
 html {
@@ -15,6 +15,10 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
+  background: radial-gradient(circle at top left, rgba(96, 165, 250, 0.14), transparent 35%),
+    radial-gradient(circle at top right, rgba(167, 139, 250, 0.12), transparent 25%),
+    linear-gradient(180deg, #f8fbff 0%, #eef4fb 100%);
+  color: #0f172a;
 }
 
 * {
@@ -29,12 +33,44 @@ textarea {
 }
 
 ::selection {
-  background: rgba(79, 140, 33, 0.25);
+  background: rgba(59, 130, 246, 0.25);
 }
 
 .focus-ring {
-  outline: 2px solid #1f5a2d;
+  outline: 2px solid #2563eb;
   outline-offset: 3px;
+}
+
+.shadow-card {
+  box-shadow: 0 28px 80px rgba(15, 23, 42, 0.12);
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.66);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 40px 90px rgba(15, 23, 42, 0.12);
+}
+
+.card-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.card-3d:hover {
+  transform: translateY(-10px) rotateX(1deg) rotateY(1deg);
+  box-shadow: 0 42px 90px rgba(15, 23, 42, 0.18);
+}
+
+.hero-surface {
+  background: radial-gradient(circle at 10% 10%, rgba(59, 130, 246, 0.18), transparent 22%),
+    radial-gradient(circle at 90% 20%, rgba(16, 185, 129, 0.14), transparent 20%),
+    radial-gradient(circle at 70% 90%, rgba(236, 72, 153, 0.08), transparent 18%);
+}
+
+.info-chip {
+  background: rgba(15, 23, 42, 0.05);
+  border: 1px solid rgba(15, 23, 42, 0.06);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -13,6 +13,10 @@ export type RecommendationOutput = {
   warnings: string[];
   actionLabel: string;
   dataFreshness: string;
+  offerPrice?: number;
+  collectionCost?: number;
+  harvestUrgencyLabel?: string;
+  marketOpportunity?: string;
 };
 
 export function createRecommendation(
@@ -22,6 +26,11 @@ export function createRecommendation(
   buyerData: { distanceKm: number; pricePerTonne: number; available: boolean },
   weather: WeatherCondition,
 ): RecommendationOutput {
+  const harvestUrgency = Math.max(
+    1,
+    Math.min(10, Math.round((Date.now() - new Date(harvestRecord.harvestDate).getTime()) / (1000 * 60 * 60 * 24))),
+  );
+
   const input: ResidueRecommendationInput = {
     residueQuantity: harvestRecord.residueQuantity,
     farmArea: farmProfile.areaInAcres,
@@ -31,7 +40,7 @@ export function createRecommendation(
     buyerPrice: buyerData.pricePerTonne,
     pickupAvailability: buyerData.available ? 1 : 0,
     farmerHasMachinery: false,
-    harvestUrgency: Math.max(1, Math.min(10, Math.round((Date.now() - new Date(harvestRecord.harvestDate).getTime()) / (1000 * 60 * 60 * 24)))),
+    harvestUrgency,
     internetAvailable: true,
   };
 
@@ -45,26 +54,37 @@ export function createRecommendation(
     farmerPriority: 'Save water',
   });
 
-  const bestAction = residueResult.recommendation === 'BOOK_MACHINERY' ? 'Book nearby machinery' : residueResult.recommendation === 'SELL_RESIDUE' ? 'List residue for sale' : 'Keep residue in field';
+  const tradeRevenue = buyerData.available ? harvestRecord.residueQuantity * buyerData.pricePerTonne : 0;
+  const bookingCost = machineryData.available ? farmProfile.areaInAcres * machineryData.pricePerAcre : 0;
+  const action = residueResult.recommendation === 'BOOK_MACHINERY' ? 'Book nearby machinery' : residueResult.recommendation === 'SELL_RESIDUE' ? 'List residue for sale' : 'Keep residue in field';
+  const harvestUrgencyLabel = harvestUrgency >= 8 ? 'High' : harvestUrgency >= 5 ? 'Medium' : 'Low';
+  const marketOpportunity = buyerData.available
+    ? `Sell residue to a buyer at ₹${buyerData.pricePerTonne}/tonne` 
+    : `Hold residue and wait for a stronger market signal`;
 
   const warnings = [];
-  if (weather.rainProbability > 40) warnings.push('Rain is likely soon, delay operations if possible');
+  if (weather.rainProbability > 40) warnings.push('Rain is likely soon, delay field operations if possible.');
+  if (harvestUrgency >= 8) warnings.push('Harvest is aging; prioritize residue collection this week.');
 
   return {
     recommendationType: 'MACHINERY_BOOKING',
-    title: bestAction,
-    explanation: `A recommendation based on residue quantity, local machinery and buyer prices, and weather conditions.`,
+    title: action,
+    explanation: `A recommendation based on residue quantity, nearby machine availability, buyer pricing, and weather conditions.`,
     confidence: Math.min(0.95, residueResult.scores.total),
-    estimatedWaterSaving: 120,
-    estimatedIncomeChange: residueResult.recommendation === 'SELL_RESIDUE' ? 1200 : 0,
+    estimatedWaterSaving: cropResult.crop === farmProfile.currentCrop ? 120 : 95,
+    estimatedIncomeChange: tradeRevenue > 0 ? Math.round(tradeRevenue * 0.8) : 0,
     reasons: [
       `Estimated residue quantity: ${harvestRecord.residueQuantity.toFixed(1)} tonnes`,
-      `Nearby machinery at ${machineryData.distanceKm} km`,
+      `Nearby machinery price: ₹${machineryData.pricePerAcre}/acre`,
       `Buyer price: ₹${buyerData.pricePerTonne}/tonne`,
       `Weather: ${weather.condition}`,
     ],
     warnings,
-    actionLabel: bestAction,
+    actionLabel: action,
     dataFreshness: 'Updated just now',
+    offerPrice: buyerData.available ? buyerData.pricePerTonne : undefined,
+    collectionCost: machineryData.available ? bookingCost : undefined,
+    harvestUrgencyLabel,
+    marketOpportunity,
   };
 }
