@@ -26,26 +26,25 @@ Key goals:
 
 ```mermaid
 flowchart TB
-  subgraph Frontend
-    A[Next.js App Router (React)]
-    A -->|UI, pages, SSG/SSR| B[Components & Pages]
-    A --> C[Client adapters (IndexedDB/localStorage)]
-  end
+  A[Next.js App Router]
+  B[UI Components & Pages]
+  C[Client storage (IndexedDB / localStorage)]
+  D[Next.js Server / API Routes]
+  E[Recommendation Service (lib/services)]
+  F[Prisma ORM]
+  G[SQLite demo database]
+  H[Weather & Market adapters]
+  I[Residue & Crop Scoring]
 
-  subgraph Server
-    D[Next.js Server Components & API Routes]
-    D --> E[Recommendation Service (lib/services)]
-    D --> F[Prisma ORM]
-    F --> G[(SQLite demo DB / Postgres in prod)]
-    D --> H[Third-party adapters: weather, market prices]
-  end
-
-  A -. fetch -> D
-  E -->|calculations| I[Residue + Crop Scoring]
-  I -->|signals| A
-
-  style Frontend fill:#fef3c7,stroke:#f59e0b
-  style Server fill:#eef2ff,stroke:#6366f1
+  A --> B
+  A --> C
+  A --> D
+  D --> E
+  D --> F
+  F --> G
+  D --> H
+  E --> I
+  I --> A
 ```
 
 ### Components (brief)
